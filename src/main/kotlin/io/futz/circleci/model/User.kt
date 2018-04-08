@@ -1,0 +1,36 @@
+package io.futz.circleci.model
+
+import java.time.OffsetDateTime
+
+data class User(val enrolledBetas: Array<String> = arrayOf(),
+                val inBetaProgram: Boolean,
+                val selectedEmail: String? = null,
+                val avatarUrl: String? = null,
+                val trialEnd: OffsetDateTime? = null,
+                val admin: Boolean,
+                val basicEmailPrefs: String? = null,
+                val signInCount: Int,
+                val githubOauthScopes: Array<String> = arrayOf(),
+                val analyticsId: String? = null,
+                val name: String? = null,
+                val gravatarId: String? = null,
+                val firstVcsAuthorizedClientId: String? = null,
+                val daysLeftInTrial: Int,
+                val parallelism: Int,
+                val student: Boolean,
+                val bitbucketAuthorized: Boolean,
+                val githubId: Int,
+                val bitbucket: String? = null,
+                val devAdmin: Boolean,
+                val allEmails: Array<String> = arrayOf(),
+                val createdAt: OffsetDateTime? = null,
+                val plan: String? = null,
+                val herokuApiKey: String? = null,
+                val identities: Map<String, Map<String, String>> = mapOf(),
+                val projects: Map<String, Map<String, String>> = mapOf(),
+                val login: String? = null,
+                val organizationPrefs: Map<String, Map<String, String>> = mapOf(),
+                val containers: Int,
+                val pusherId: String? = null,
+                val numProjectsFollowed: Int
+)
