@@ -65,10 +65,34 @@ interface CircleCi {
                    @Path("project") project: String,
                    @Path("buildNum") buildNum: String)
 
-/*
-  GET: /project/:vcs-type/:reponame/:project/:build_num/artifacts
-  List the artifacts produced by a given build.
+  /**
+   * List the artifacts produced by a given build.
+   */
+  @GET("project/{vcsType}/{username}/{project}/{buildNum}/artifacts")
+  fun artifacts(@Path("vcsType") vcsType: String,
+                @Path("username") username: String,
+                @Path("project") project: String,
+                @Path("buildNum") buildNum: String)
 
+
+  /**
+   * Lists checkout keys.
+   */
+  @GET("/project/{vcs-type}/{username}/{project}/checkout-key")
+  fun checkoutKeys(@Path("vcsType") vcsType: String,
+                   @Path("username") username: String,
+                   @Path("project") project: String)
+
+  /**
+   * Get a checkout key.
+   */
+  @GET("/project/{vcs-type}/{username}/{project}/checkout-key/{fingerprint}")
+  fun checkoutKey(@Path("vcsType") vcsType: String,
+                  @Path("username") username: String,
+                  @Path("project") project: String,
+                  @Path("fingerprint") fingerprint: String)
+
+/*
   POST: /project/:vcs-type/:username/:project/:build_num/retry
   Retries the build, returns a summary of the new build.
 
@@ -93,14 +117,8 @@ interface CircleCi {
   POST: /project/:vcs-type/:username/:project/ssh-key
   Create an ssh key used to access external systems that require SSH key-based authentication
 
-  GET: /project/:vcs-type/:username/:project/checkout-key
-  Lists checkout keys.
-
   POST: /project/:vcs-type/:username/:project/checkout-key
   Create a new checkout key.
-
-  GET: /project/:vcs-type/:username/:project/checkout-key/:fingerprint
-  Get a checkout key.
 
   DELETE: /project/:vcs-type/:username/:project/checkout-key/:fingerprint
   Delete a checkout key.
