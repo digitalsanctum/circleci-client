@@ -1,7 +1,9 @@
 package io.futz.circleci.client
 
+import io.futz.circleci.model.Artifact
 import io.futz.circleci.model.Project
 import io.futz.circleci.model.BuildDetail
+import io.futz.circleci.model.BuildDetailWithSteps
 import io.futz.circleci.model.User
 import okhttp3.logging.HttpLoggingInterceptor
 import java.util.*
@@ -45,6 +47,30 @@ class CircleCiClient(factory: CircleCiClientFactory) {
                        offset: Int? = 0,
                        filter: String? = null): Set<BuildDetail> {
     val call = client.buildsForProject(vcsType, username, project, limit, offset, filter)
+    val resp = call.execute()
+    return when {
+      resp.isSuccessful -> resp.body()!!
+      else -> setOf()
+    }
+  }
+
+  fun buildDetails(vcsType: String,
+                   username: String,
+                   project: String,
+                   buildNum: String): Optional<BuildDetailWithSteps> {
+    val call = client.buildDetails(vcsType, username, project, buildNum)
+    val resp = call.execute()
+    return when {
+      resp.isSuccessful -> Optional.ofNullable(resp.body())
+      else -> Optional.empty()
+    }
+  }
+
+  fun artifacts(vcsType: String,
+                username: String,
+                project: String,
+                buildNum: String): Set<Artifact> {
+    val call = client.artifacts(vcsType, username, project, buildNum)
     val resp = call.execute()
     return when {
       resp.isSuccessful -> resp.body()!!

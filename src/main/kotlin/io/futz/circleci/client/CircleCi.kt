@@ -1,7 +1,9 @@
 package io.futz.circleci.client
 
+import io.futz.circleci.model.Artifact
 import io.futz.circleci.model.Project
 import io.futz.circleci.model.BuildDetail
+import io.futz.circleci.model.BuildDetailWithSteps
 import io.futz.circleci.model.User
 import retrofit2.Call
 import retrofit2.http.GET
@@ -63,7 +65,7 @@ interface CircleCi {
   fun buildDetails(@Path("vcsType") vcsType: String,
                    @Path("username") username: String,
                    @Path("project") project: String,
-                   @Path("buildNum") buildNum: String)
+                   @Path("buildNum") buildNum: String): Call<BuildDetailWithSteps>
 
   /**
    * List the artifacts produced by a given build.
@@ -72,7 +74,7 @@ interface CircleCi {
   fun artifacts(@Path("vcsType") vcsType: String,
                 @Path("username") username: String,
                 @Path("project") project: String,
-                @Path("buildNum") buildNum: String)
+                @Path("buildNum") buildNum: String): Call<Set<Artifact>>
 
 
   /**

@@ -8,7 +8,7 @@ import org.junit.Test
 
 class CircleCiClientTests {
 
-  val client = CircleCiClient(CircleCiClientFactory())
+  private val client = CircleCiClient(CircleCiClientFactory())
 
   @Before
   fun setup() {
@@ -36,5 +36,17 @@ class CircleCiClientTests {
   fun me() {
     val maybeUser = client.me()
     assertTrue(maybeUser.isPresent)
+  }
+
+  @Test
+  fun buildDetails() {
+    val maybeBuildDetailsWithSteps = client.buildDetails("github", "digitalsanctum", "java-lib", "5")
+    assertTrue(maybeBuildDetailsWithSteps.isPresent)
+  }
+
+  @Test
+  fun artifacts() {
+    val artifacts = client.artifacts("github", "digitalsanctum", "java-lib", "7")
+    assertNotNull(artifacts)
   }
 }

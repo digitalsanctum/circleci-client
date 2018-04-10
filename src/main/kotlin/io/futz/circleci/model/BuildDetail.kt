@@ -54,5 +54,4 @@ data class BuildDetail(val timedout: Boolean,
                        val jobName: String? = null,
                        val hasArtifacts: Boolean,
                        val user: User,
-                       val username: String) {
-}
+                       val username: String)
