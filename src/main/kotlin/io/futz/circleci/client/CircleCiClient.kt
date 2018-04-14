@@ -1,14 +1,14 @@
 package io.futz.circleci.client
 
 import io.futz.circleci.model.Artifact
-import io.futz.circleci.model.Project
 import io.futz.circleci.model.BuildDetail
 import io.futz.circleci.model.BuildDetailWithSteps
 import io.futz.circleci.model.CheckoutKey
 import io.futz.circleci.model.EnvironmentVariable
+import io.futz.circleci.model.Project
+import io.futz.circleci.model.TestMetadata
 import io.futz.circleci.model.User
 import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.http.Path
 import java.util.*
 
 class CircleCiClient(factory: CircleCiClientFactory) {
@@ -120,6 +120,18 @@ class CircleCiClient(factory: CircleCiClientFactory) {
                           project: String,
                           name: String): Optional<EnvironmentVariable> {
     val call = client.environmentVariable(vcsType, username, project, name)
+    val resp = call.execute()
+    return when {
+      resp.isSuccessful -> Optional.ofNullable(resp.body())
+      else -> Optional.empty()
+    }
+  }
+
+  fun testMetadata(vcsType: String,
+                   username: String,
+                   project: String,
+                   buildNum: String): Optional<TestMetadata> {
+    val call = client.testMetadata(vcsType, username, project, buildNum)
     val resp = call.execute()
     return when {
       resp.isSuccessful -> Optional.ofNullable(resp.body())

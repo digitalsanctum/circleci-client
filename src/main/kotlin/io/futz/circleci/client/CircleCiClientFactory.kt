@@ -24,7 +24,7 @@ class CircleCiClientFactory {
     val objectMapper = ObjectMapper()
     objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
     objectMapper.configure(DeserializationFeature.UNWRAP_ROOT_VALUE, false)
-    objectMapper.propertyNamingStrategy = PropertyNamingStrategy.CAMEL_CASE_TO_LOWER_CASE_WITH_UNDERSCORES
+    objectMapper.propertyNamingStrategy = PropertyNamingStrategy.SNAKE_CASE
     objectMapper.registerModule(JavaTimeModule())
     objectMapper.registerModule(KotlinModule())
     return objectMapper

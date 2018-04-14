@@ -60,6 +60,7 @@ class CircleCiClientTests {
   fun checkoutKey() {
     val checkoutKey = client.checkoutKey("github", "digitalsanctum", "java-lib", "59:d9:39:62:8a:3f:ae:1c:aa:dc:37:1c:ac:2c:5d:8e")
     assertNotNull(checkoutKey)
+    assertTrue(checkoutKey.isPresent)
   }
 
   @Test
@@ -76,6 +77,15 @@ class CircleCiClientTests {
 
   @Test
   fun testMetadata() {
+    val testMetadata = client.testMetadata("github", "digitalsanctum", "java-lib", "9")
+    assertNotNull(testMetadata)
+    assertTrue(testMetadata.isPresent)
+  }
 
+  @Test
+  fun testMetadataWithException() {
+    val testMetadata = client.testMetadata("github", "digitalsanctum", "java-lib", "10")
+    assertNotNull(testMetadata)
+    assertTrue(testMetadata.isPresent)
   }
 }

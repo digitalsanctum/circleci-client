@@ -1,17 +1,17 @@
 package io.futz.circleci.client
 
 import io.futz.circleci.model.Artifact
-import io.futz.circleci.model.Project
 import io.futz.circleci.model.BuildDetail
 import io.futz.circleci.model.BuildDetailWithSteps
 import io.futz.circleci.model.CheckoutKey
 import io.futz.circleci.model.EnvironmentVariable
+import io.futz.circleci.model.Project
+import io.futz.circleci.model.TestMetadata
 import io.futz.circleci.model.User
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
-import java.util.*
 
 interface CircleCi {
 
@@ -113,6 +113,14 @@ interface CircleCi {
                           @Path("project") project: String,
                           @Path("name") name: String): Call<EnvironmentVariable>
 
+  /**
+   * Get test metadata for a build.
+   */
+  @GET("project/{vcsType}/{username}/{project}/{buildNum}/tests")
+  fun testMetadata(@Path("vcsType") vcsType: String,
+                   @Path("username") username: String,
+                   @Path("project") project: String,
+                   @Path("buildNum") buildNum: String): Call<TestMetadata>
 
 
 /*
