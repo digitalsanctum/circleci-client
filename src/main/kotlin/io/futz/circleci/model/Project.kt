@@ -2,7 +2,7 @@ package io.futz.circleci.model
 
 data class Project(
     val ircServer: String? = null,
-    val sshKeys: Array<String>,
+    val sshKeys: Array<SshKey>? = emptyArray(),
     val branches: Map<String, Branch>,
     val ircKeywork: String? = null,
     val oss: Boolean,

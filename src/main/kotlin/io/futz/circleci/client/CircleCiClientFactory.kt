@@ -46,6 +46,7 @@ class CircleCiClientFactory {
           val url = originalRequest.url().newBuilder().addQueryParameter("circle-token", token).build()
           val augmentedRequest = originalRequest.newBuilder()
               .header("Accept", "application/json")
+              .header("Content-Type", "application/json")
               .method(originalRequest.method(), originalRequest.body())
               .url(url)
               .build()
