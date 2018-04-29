@@ -3,7 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 buildscript {
   var kotlinVersion: String by extra
-  kotlinVersion = "1.2.40-eap-51"
+  kotlinVersion = "1.2.41"
 
   repositories {
     jcenter()

@@ -5,13 +5,19 @@ import io.futz.circleci.model.BuildDetail
 import io.futz.circleci.model.BuildDetailWithSteps
 import io.futz.circleci.model.CheckoutKey
 import io.futz.circleci.model.EnvironmentVariable
+import io.futz.circleci.model.HerokuApiKey
 import io.futz.circleci.model.Project
 import io.futz.circleci.model.TestMetadata
 import io.futz.circleci.model.User
+import okhttp3.Response
+import okhttp3.ResponseBody
 import retrofit2.Call
+import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
+import java.util.*
 
 interface CircleCi {
 
@@ -121,6 +127,12 @@ interface CircleCi {
                    @Path("username") username: String,
                    @Path("project") project: String,
                    @Path("buildNum") buildNum: String): Call<TestMetadata>
+
+  /**
+   * Add Heroku API key to CircleCI.
+   */
+  @POST("user/heroku-key")
+  fun addHerokuApiKey(@Body herokuApiKey: HerokuApiKey): Call<Any>
 
 
 /*

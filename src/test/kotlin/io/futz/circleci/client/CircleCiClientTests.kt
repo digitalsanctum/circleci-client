@@ -1,6 +1,9 @@
 package io.futz.circleci.client
 
+import io.futz.circleci.model.HerokuApiKey
 import org.junit.After
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -9,6 +12,8 @@ import org.junit.Test
 class CircleCiClientTests {
 
   private val client = CircleCiClient(CircleCiClientFactory())
+
+  private val validHerokuApiKey = System.getenv("HEROKU_API_KEY")
 
   @Before
   fun setup() {
@@ -83,9 +88,36 @@ class CircleCiClientTests {
   }
 
   @Test
+  fun testMetadataWithNotFound() {
+    val testMetadata = client.testMetadata("github", "digitalsanctum", "foo", "9")
+    assertNotNull(testMetadata)
+    assertTrue(testMetadata.isPresent)
+  }
+
+  @Test
   fun testMetadataWithException() {
     val testMetadata = client.testMetadata("github", "digitalsanctum", "java-lib", "10")
     assertNotNull(testMetadata)
     assertTrue(testMetadata.isPresent)
+  }
+
+  @Test
+  fun addHerokuApiKeyWithValidKey() {
+    val herokuApiKey = HerokuApiKey(validHerokuApiKey)
+    val maybeResponse = client.addHerokuApiKey(herokuApiKey)
+    assertNotNull(maybeResponse)
+    assertFalse(maybeResponse.first.isPresent)
+    assertFalse(maybeResponse.second.isPresent)
+  }
+
+  @Test
+  fun addHerokuApiKeyWithBogusKey() {
+    val herokuApiKey = HerokuApiKey("boguskey")
+    val maybeResponse = client.addHerokuApiKey(herokuApiKey)
+    assertNotNull(maybeResponse)
+    val apiResponseError = maybeResponse.first
+    assertTrue(apiResponseError.isPresent)
+    assertEquals(403, apiResponseError.get().code)
+    assertEquals("Your Heroku API key is invalid.", apiResponseError.get().message)
   }
 }
