@@ -9,15 +9,12 @@ import io.futz.circleci.model.HerokuApiKey
 import io.futz.circleci.model.Project
 import io.futz.circleci.model.TestMetadata
 import io.futz.circleci.model.User
-import okhttp3.Response
-import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
-import java.util.*
 
 interface CircleCi {
 
@@ -68,7 +65,7 @@ interface CircleCi {
 
   /**
    * Full details for a single build. The response includes all of the fields from the build summary.
-   * This is also the payload for the notification webhooks, in which case this object is the value to a key named ‘payload’.
+   * This is also the payload for the notification web hooks, in which case this object is the value to a key named ‘payload’.
    */
   @GET("project/{vcsType}/{username}/{project}/{buildNum}")
   fun buildDetails(@Path("vcsType") vcsType: String,
@@ -132,10 +129,12 @@ interface CircleCi {
    * Add Heroku API key to CircleCI.
    */
   @POST("user/heroku-key")
-  fun addHerokuApiKey(@Body herokuApiKey: HerokuApiKey): Call<Any>
+  fun addHerokuApiKey(@Body herokuApiKey: HerokuApiKey): Call<String>
 
 
 /*
+  TODO
+
   POST: /project/:vcs-type/:username/:project/:build_num/retry
   Retries the build, returns a summary of the new build.
 

@@ -17,7 +17,7 @@ buildscript {
 }
 
 group = "io.futz"
-version = "1.0-SNAPSHOT"
+version = "0.1.0"
 
 plugins {
   application

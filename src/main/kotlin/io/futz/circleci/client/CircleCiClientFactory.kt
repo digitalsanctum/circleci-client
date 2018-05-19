@@ -5,21 +5,18 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.PropertyNamingStrategy
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.KotlinModule
-import io.futz.circleci.model.ApiResponseError
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
-import okhttp3.ResponseBody
+import okhttp3.Request
 import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Converter
 import retrofit2.Retrofit
 import retrofit2.converter.jackson.JacksonConverterFactory
 
-
 class CircleCiClientFactory {
 
-  fun getClient(): CircleCi = getClient(HttpLoggingInterceptor.Level.BASIC, getObjectMapper())
+  fun create(): CircleCi = create(HttpLoggingInterceptor.Level.BASIC, getObjectMapper())
 
-  fun getClient(loggingLevel: HttpLoggingInterceptor.Level): CircleCi
-      = getClient(loggingLevel, getObjectMapper())
+  fun create(loggingLevel: HttpLoggingInterceptor.Level): CircleCi = create(loggingLevel, getObjectMapper())
 
   private fun getObjectMapper(): ObjectMapper {
     val objectMapper = ObjectMapper()
@@ -31,8 +28,8 @@ class CircleCiClientFactory {
     return objectMapper
   }
 
-  private fun getClient(loggingLevel: HttpLoggingInterceptor.Level,
-                        objectMapper: ObjectMapper): CircleCi {
+  private fun create(loggingLevel: HttpLoggingInterceptor.Level,
+                     objectMapper: ObjectMapper): CircleCi {
     val retrofit = getRetrofit(loggingLevel, objectMapper)
     return retrofit.create(CircleCi::class.java)
   }
@@ -41,8 +38,7 @@ class CircleCiClientFactory {
 
   private fun getRetrofit(loggingLevel: HttpLoggingInterceptor.Level, objectMapper: ObjectMapper): Retrofit {
 
-    val token = System.getenv("CIRCLECI_TOKEN")
-        ?: throw IllegalStateException("Missing token. Is CIRCLECI_TOKEN environment variable set?")
+
 
     val logging = HttpLoggingInterceptor()
     logging.level = loggingLevel
@@ -50,14 +46,7 @@ class CircleCiClientFactory {
     val client = OkHttpClient.Builder()
         .addInterceptor(logging)
         .addInterceptor { chain ->
-          val originalRequest = chain.request()
-          val url = originalRequest.url().newBuilder().addQueryParameter("circle-token", token).build()
-          val augmentedRequest = originalRequest.newBuilder()
-              .header("Accept", "application/json")
-              .header("Content-Type", "application/json")
-              .method(originalRequest.method(), originalRequest.body())
-              .url(url)
-              .build()
+          val augmentedRequest = augmentRequest(chain)
           chain.proceed(augmentedRequest)
         }
         .build()
@@ -69,7 +58,17 @@ class CircleCiClientFactory {
         .build()
   }
 
-  fun getErrorConverter(): Converter<ResponseBody, ApiResponseError> {
-    return getRetrofit().responseBodyConverter<ApiResponseError>(ApiResponseError::class.java, arrayOf())
+  private fun augmentRequest(chain: Interceptor.Chain): Request {
+    val token = System.getenv("CIRCLECI_TOKEN")
+        ?: throw IllegalStateException("Missing token. Is CIRCLECI_TOKEN environment variable set?")
+
+    val originalRequest = chain.request()
+    val url = originalRequest.url().newBuilder().addQueryParameter("circle-token", token).build()
+    return originalRequest.newBuilder()
+        .header("Accept", "application/json")
+        .header("Content-Type", "application/json")
+        .method(originalRequest.method(), originalRequest.body())
+        .url(url)
+        .build()
   }
 }
